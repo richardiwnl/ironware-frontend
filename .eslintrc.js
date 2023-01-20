@@ -24,5 +24,6 @@ module.exports = {
     'func-names': 'off',
     'default-param-last': 'off',
     'import/no-named-as-default': 'off',
+    'import/no-extraneous-dependencies': ['off', { devDependencies: true }],
   },
 };

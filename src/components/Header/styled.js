@@ -1,16 +1,27 @@
 import styled from 'styled-components';
-import { primaryColor } from '../../config/colors';
+import { primaryDarkColor } from '../../config/colors';
 
 export const Nav = styled.nav`
-  background-color: ${primaryColor};
-  padding: 20px;
+  font-family: 'Alike';
+  font-size: 2rem;
+  background-color: ${primaryDarkColor};
+  padding: 15px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+
+  .account-circle {
+    transition: transform 150ms linear;
+
+    &:hover {
+      transform: scale(1.15);
+    }
+  }
 
   a {
     color: white;
     margin: 0 10px 0;
     font-weight: bold;
+    text-decoration: none;
   }
 `;
