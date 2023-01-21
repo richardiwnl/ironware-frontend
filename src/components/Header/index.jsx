@@ -1,8 +1,18 @@
 import React from 'react';
-import { Container, Header, Nav, Navbar } from 'rsuite';
-import { FaUserCircle } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+import { Container, Header, IconButton, Nav, Navbar } from 'rsuite';
+import { FaSun, FaMoon } from 'react-icons/fa';
+
+import * as actions from '../../store/modules/theme/actions';
 
 export default function IHeader() {
+  const dispatch = useDispatch();
+  const currentTheme = useSelector(state => state.theme.theme);
+
+  const changeTheme = () => {
+    dispatch(actions.switchTheme());
+  };
+
   return (
     <Container>
       <Header>
@@ -11,8 +21,18 @@ export default function IHeader() {
             <Navbar.Brand href="#">IRONWARE</Navbar.Brand>
           </Nav>
           <Nav pullRight>
-            <Nav.Item>
-              <FaUserCircle size={28} />
+            <Nav.Item onClick={changeTheme} as="div">
+              <IconButton
+                appearance="subtle"
+                size="sm"
+                icon={
+                  currentTheme === 'dark' ? (
+                    <FaMoon style={{ fontSize: 26 }} />
+                  ) : (
+                    <FaSun style={{ fontSize: 26 }} />
+                  )
+                }
+              />
             </Nav.Item>
           </Nav>
         </Navbar>

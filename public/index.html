@@ -4,6 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>React App</title>
+    <script>
+      {
+        (function () {
+          var info = console.info;
+          console.info = function (message) {
+            if (!/Download the React DevTools/.test(message))
+              info.apply(console, arguments);
+          };
+        })();
+      }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

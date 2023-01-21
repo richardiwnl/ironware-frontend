@@ -18,6 +18,8 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'react/jsx-filename-extension': 'off',
+    'react/forbid-prop-types': 'off',
+    'react/require-default-props': 'off',
     'import/prefer-default-export': 'off',
     'react-hooks/rules-of-hooks': 'error',
     'no-console': 'off',
