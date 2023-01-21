@@ -18,6 +18,7 @@
 .env.test.local
 .env.production.local
 .vscode/
+src/styles/rsuite.css
 package-lock.json
 
 npm-debug.log*
