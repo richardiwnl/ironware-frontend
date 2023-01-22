@@ -3,7 +3,7 @@ import { DateType, SchemaModel, StringType } from 'schema-typed';
 const UsuarioRegister = SchemaModel({
   nome: StringType()
     .addRule(value => {
-      if (value.split(' ').length < 3) {
+      if (value.trim().split(' ').length < 3) {
         return false;
       }
       return true;
@@ -31,22 +31,8 @@ const UsuarioRegister = SchemaModel({
 
       return count === 11;
     }, 'O telefone deve ter 11 dígitos'),
-  senha1: StringType()
-    .isRequired('A senha é obrigatória')
-    .addRule((value, data) => {
-      if (value !== data.senha2) {
-        return false;
-      }
-      return true;
-    }, 'As senhas não coincidem'),
-  senha2: StringType()
-    .isRequired('A senha é obrigatória')
-    .addRule((value, data) => {
-      if (value !== data.senha1) {
-        return false;
-      }
-      return true;
-    }, 'As senhas não coincidem'),
+  senha1: StringType().isRequired('A senha é obrigatória'),
+  senha2: StringType().isRequired('A senha é obrigatória'),
 });
 
 export default UsuarioRegister;

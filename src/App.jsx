@@ -1,15 +1,15 @@
-import React from 'react';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
-import { PersistGate } from 'redux-persist/integration/react';
 import figlet from 'figlet';
 import standard from 'figlet/importable-fonts/Standard';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router-dom';
+import { PersistGate } from 'redux-persist/integration/react';
 
-import IHeader from './components/Header';
-import './styles/rsuite.css';
-import Routes from './routes';
-import store, { persistor } from './store';
 import ThemeProvider from './components/ThemeProvider';
+import Routes from './routes';
+import history from './services/history';
+import store, { persistor } from './store';
+import './styles/rsuite.css';
 
 function App() {
   figlet.parseFont('Standard', standard);
@@ -32,18 +32,13 @@ function App() {
     }
   );
 
-  // const theme = useSelector(state => state.theme.theme);
-
-  // console.log(theme);
-
   return (
     <Provider store={store}>
       <ThemeProvider>
         <PersistGate persistor={persistor}>
-          <BrowserRouter>
-            <IHeader />
+          <Router history={history}>
             <Routes />
-          </BrowserRouter>
+          </Router>
         </PersistGate>
       </ThemeProvider>
     </Provider>

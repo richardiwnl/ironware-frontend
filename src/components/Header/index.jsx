@@ -18,7 +18,7 @@ export default function IHeader() {
       <Header>
         <Navbar>
           <Nav>
-            <Navbar.Brand href="#">IRONWARE</Navbar.Brand>
+            <Navbar.Brand href="/">IRONWARE</Navbar.Brand>
           </Nav>
           <Nav pullRight>
             <Nav.Item onClick={changeTheme} as="div">

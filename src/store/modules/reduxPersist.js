@@ -6,7 +6,7 @@ export default reducers => {
     {
       key: 'IRONWARE',
       storage,
-      whitelist: ['theme'],
+      whitelist: ['auth', 'theme'],
     },
     reducers
   );

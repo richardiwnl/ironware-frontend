@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AutoComplete,
   Button,
@@ -25,17 +24,23 @@ import Lock from '@rsuite/icons/legacy/Lock';
 import MemberIcon from '@rsuite/icons/Member';
 import PhoneFillIcon from '@rsuite/icons/PhoneFill';
 
-import { useDispatch } from 'react-redux';
 import { get } from 'lodash';
 
 import CustomLoader from '../../components/CustomLoader';
-import usuario from './usuarioRegister';
 import axios from '../../services/axios';
+import history from '../../services/history';
+import usuario from './usuarioRegister';
+import IHeader from '../../components/Header';
 
 export default function Register() {
   const style = {
     marginTop: '50px',
     padding: '10px',
+  };
+
+  const helperStyle = {
+    marginTop: '20px',
+    textAlign: 'center',
   };
 
   const toaster = useToaster();
@@ -46,7 +51,7 @@ export default function Register() {
   const [dataNasc, setDataNasc] = useState();
   const [data, setData] = useState([]);
   const [senha1, setSenha1] = useState('');
-  const [, setSenha2] = useState('');
+  const [senha2, setSenha2] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   const [visible, setVisible] = useState(false);
@@ -60,6 +65,15 @@ export default function Register() {
       toaster.push(
         <Message showIcon type="error">
           Há erros no formulário!
+        </Message>
+      );
+      return;
+    }
+
+    if (senha1 !== senha2) {
+      toaster.push(
+        <Message duration={2000} showIcon type="error">
+          As senhas não coincidem
         </Message>
       );
       return;
@@ -83,6 +97,8 @@ export default function Register() {
           Conta criada com sucesso
         </Message>
       );
+
+      history.push('/login/');
     } catch (err) {
       const errors = get(err, 'response.data.errors', []);
 
@@ -115,216 +131,223 @@ export default function Register() {
   };
 
   return (
-    <Container style={style}>
-      <CustomLoader isLoading={isLoading} />
-      <Content>
-        <FlexboxGrid justify="center">
-          <Panel header={<h3>Crie sua conta</h3>} bordered>
-            <Form
-              model={usuario}
-              onSubmit={handleFormSubmit}
-              autoComplete="off"
-            >
-              <div className="parent">
-                <div className="firstChild">
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <AvatarIcon />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        value={nome}
-                        type="text"
-                        name="nome"
-                        onChange={e => setNome(e)}
-                        placeholder="Nome completo*"
-                        autoFocus
-                        size="lg"
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <CalendarIcon />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        accepter={DatePicker}
-                        locale={{
-                          sunday: 'Dom',
-                          monday: 'Seg',
-                          tuesday: 'Ter',
-                          wednesday: 'Qua',
-                          thursday: 'Qui',
-                          friday: 'Sex',
-                          saturday: 'Sáb',
-                          ok: 'OK',
-                          today: 'Hoje',
-                          yesterday: 'Ontem',
-                          hours: 'Horas',
-                          minutes: 'Minutos',
-                          seconds: 'Segundos',
-                        }}
-                        format="dd/MM/yyyy"
-                        limitEndYear={1900}
-                        onChange={setDataNasc}
-                        block
-                        size="lg"
-                        name="data"
-                        placeholder="Data de nascimento*"
-                      />
-                    </InputGroup>
-                  </Form.Group>
+    <>
+      <IHeader />
+      <Container style={style}>
+        <CustomLoader isLoading={isLoading} />
+        <Content>
+          <FlexboxGrid justify="center">
+            <Panel header={<h3>Crie sua conta</h3>} bordered>
+              <Form
+                model={usuario}
+                onSubmit={handleFormSubmit}
+                autoComplete="off"
+              >
+                <div className="parent">
+                  <div className="firstChild">
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <AvatarIcon />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          value={nome}
+                          type="text"
+                          name="nome"
+                          onChange={e => setNome(e)}
+                          placeholder="Nome completo*"
+                          autoFocus
+                          size="lg"
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <CalendarIcon />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          accepter={DatePicker}
+                          locale={{
+                            sunday: 'Dom',
+                            monday: 'Seg',
+                            tuesday: 'Ter',
+                            wednesday: 'Qua',
+                            thursday: 'Qui',
+                            friday: 'Sex',
+                            saturday: 'Sáb',
+                            ok: 'OK',
+                            today: 'Hoje',
+                            yesterday: 'Ontem',
+                            hours: 'Horas',
+                            minutes: 'Minutos',
+                            seconds: 'Segundos',
+                          }}
+                          format="dd/MM/yyyy"
+                          limitEndYear={1900}
+                          oneTap
+                          onChange={setDataNasc}
+                          block
+                          size="lg"
+                          name="data"
+                          placeholder="Data de nascimento*"
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                  </div>
+
+                  <div className="secondChild">
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <MemberIcon />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          accepter={MaskedInput}
+                          value={cpf}
+                          guide
+                          mask={[
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            '.',
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            '.',
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            '-',
+                            /[0-9]/,
+                            /[0-9]/,
+                          ]}
+                          showMask={false}
+                          keepCharPositions={false}
+                          onChange={setCpf}
+                          name="cpf"
+                          placeholder="CPF*"
+                          placeholderChar="_"
+                          size="lg"
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <PhoneFillIcon />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          accepter={MaskedInput}
+                          value={telefone}
+                          mask={[
+                            '(',
+                            /[1-9]/,
+                            /[0-9]/,
+                            ')',
+                            ' ',
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            '-',
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                            /[0-9]/,
+                          ]}
+                          showMask={false}
+                          keepCharPositions={false}
+                          onChange={setTelefone}
+                          name="telefone"
+                          placeholder="Telefone*"
+                          placeholderChar="_"
+                          size="lg"
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                  </div>
                 </div>
 
-                <div className="secondChild">
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <MemberIcon />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        accepter={MaskedInput}
-                        value={cpf}
-                        guide
-                        mask={[
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          '.',
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          '.',
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          '-',
-                          /[0-9]/,
-                          /[0-9]/,
-                        ]}
-                        showMask={false}
-                        keepCharPositions={false}
-                        onChange={setCpf}
-                        name="cpf"
-                        placeholder="CPF*"
-                        placeholderChar="_"
-                        size="lg"
-                      />
-                    </InputGroup>
-                  </Form.Group>
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <PhoneFillIcon />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        accepter={MaskedInput}
-                        value={telefone}
-                        mask={[
-                          '(',
-                          /[1-9]/,
-                          /[0-9]/,
-                          ')',
-                          ' ',
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          '-',
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                          /[0-9]/,
-                        ]}
-                        showMask={false}
-                        keepCharPositions={false}
-                        onChange={setTelefone}
-                        name="telefone"
-                        placeholder="Telefone*"
-                        placeholderChar="_"
-                        size="lg"
-                      />
-                    </InputGroup>
-                  </Form.Group>
+                <Form.Group>
+                  <InputGroup size="lg">
+                    <InputGroup.Addon>
+                      <EmailFillIcon />
+                    </InputGroup.Addon>
+                    <Form.Control
+                      accepter={AutoComplete}
+                      data={data}
+                      onChange={emailHandleChange}
+                      name="email"
+                      placeholder="E-mail*"
+                      size="lg"
+                    />
+                  </InputGroup>
+                </Form.Group>
+
+                <div className="parent">
+                  <div className="firstChild">
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <Lock />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          placeholder="Sua senha*"
+                          name="senha1"
+                          onChange={setSenha1}
+                          type={visible ? 'text' : 'password'}
+                          size="lg"
+                        />
+                        <InputGroup.Button onClick={handleChange}>
+                          {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </Form.Group>
+                  </div>
+
+                  <div className="secondChild">
+                    <Form.Group>
+                      <InputGroup size="lg">
+                        <InputGroup.Addon>
+                          <Lock />
+                        </InputGroup.Addon>
+                        <Form.Control
+                          placeholder="Confirme sua senha*"
+                          name="senha2"
+                          onChange={setSenha2}
+                          type={visible ? 'text' : 'password'}
+                          size="lg"
+                        />
+                        <InputGroup.Button onClick={handleChange}>
+                          {visible ? <EyeIcon /> : <EyeSlashIcon />}
+                        </InputGroup.Button>
+                      </InputGroup>
+                    </Form.Group>
+                  </div>
                 </div>
+
+                <Form.Group>
+                  <ButtonToolbar>
+                    <Button
+                      className="form-submit"
+                      type="submit"
+                      appearance="primary"
+                      size="lg"
+                    >
+                      Criar sua conta
+                    </Button>
+                  </ButtonToolbar>
+                </Form.Group>
+              </Form>
+              <div style={helperStyle}>
+                Já possui cadastro? Faça <a href="/login">Login</a>
               </div>
-
-              <Form.Group>
-                <InputGroup size="lg">
-                  <InputGroup.Addon>
-                    <EmailFillIcon />
-                  </InputGroup.Addon>
-                  <Form.Control
-                    accepter={AutoComplete}
-                    data={data}
-                    onChange={emailHandleChange}
-                    name="email"
-                    placeholder="E-mail*"
-                    size="lg"
-                  />
-                </InputGroup>
-              </Form.Group>
-
-              <div className="parent">
-                <div className="firstChild">
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <Lock />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        placeholder="Sua senha*"
-                        name="senha1"
-                        onChange={setSenha1}
-                        type={visible ? 'text' : 'password'}
-                        size="lg"
-                      />
-                      <InputGroup.Button onClick={handleChange}>
-                        {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </Form.Group>
-                </div>
-
-                <div className="secondChild">
-                  <Form.Group>
-                    <InputGroup size="lg">
-                      <InputGroup.Addon>
-                        <Lock />
-                      </InputGroup.Addon>
-                      <Form.Control
-                        placeholder="Confirme sua senha*"
-                        name="senha2"
-                        onChange={setSenha2}
-                        type={visible ? 'text' : 'password'}
-                        size="lg"
-                      />
-                      <InputGroup.Button onClick={handleChange}>
-                        {visible ? <EyeIcon /> : <EyeSlashIcon />}
-                      </InputGroup.Button>
-                    </InputGroup>
-                  </Form.Group>
-                </div>
-              </div>
-
-              <Form.Group>
-                <ButtonToolbar>
-                  <Button
-                    className="form-submit"
-                    type="submit"
-                    appearance="primary"
-                    size="lg"
-                  >
-                    Criar sua conta
-                  </Button>
-                </ButtonToolbar>
-              </Form.Group>
-            </Form>
-          </Panel>
-        </FlexboxGrid>
-      </Content>
-    </Container>
+            </Panel>
+          </FlexboxGrid>
+        </Content>
+      </Container>
+    </>
   );
 }
