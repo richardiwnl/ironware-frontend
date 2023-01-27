@@ -1,7 +1,7 @@
 import React from 'react';
+import { FaMoon, FaSun } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Header, IconButton, Nav, Navbar } from 'rsuite';
-import { FaSun, FaMoon } from 'react-icons/fa';
 
 import * as actions from '../../store/modules/theme/actions';
 
@@ -27,9 +27,9 @@ export default function IHeader() {
                 size="sm"
                 icon={
                   currentTheme === 'dark' ? (
-                    <FaMoon style={{ fontSize: 26 }} />
+                    <FaMoon style={{ fontSize: 28 }} />
                   ) : (
-                    <FaSun style={{ fontSize: 26 }} />
+                    <FaSun style={{ fontSize: 28 }} />
                   )
                 }
               />

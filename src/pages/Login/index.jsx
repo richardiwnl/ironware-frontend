@@ -1,35 +1,34 @@
 /* eslint-disable no-unused-vars */
-import React, { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { get } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
+  AutoComplete,
+  ButtonToolbar,
   Container,
   Content,
   FlexboxGrid,
-  Panel,
   Form,
-  InputGroup,
-  AutoComplete,
-  Button,
-  ButtonToolbar,
   IconButton,
-  useToaster,
+  InputGroup,
   Message,
+  Panel,
+  useToaster,
 } from 'rsuite';
 
 import EmailFillIcon from '@rsuite/icons/EmailFill';
 import EyeIcon from '@rsuite/icons/legacy/Eye';
 import EyeSlashIcon from '@rsuite/icons/legacy/EyeSlash';
-import SignIn from '@rsuite/icons/legacy/SignIn';
 import Lock from '@rsuite/icons/legacy/Lock';
+import SignIn from '@rsuite/icons/legacy/SignIn';
 
-import * as actions from '../../store/modules/auth/actions';
 import CustomLoader from '../../components/CustomLoader';
+import * as actions from '../../store/modules/auth/actions';
 import usuarioLogin from './usuarioLogin';
 
+import IHeader from '../../components/Header';
 import axios from '../../services/axios';
 import history from '../../services/history';
-import IHeader from '../../components/Header';
 
 export default function Login() {
   const style = {
