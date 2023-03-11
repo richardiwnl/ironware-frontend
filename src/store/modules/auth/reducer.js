@@ -5,6 +5,7 @@ const initialState = {
   isLoading: false,
   token: '',
   user: {},
+  admin: {},
 };
 
 export default (state = initialState, action) => {
@@ -16,6 +17,13 @@ export default (state = initialState, action) => {
     }
     case types.LOGIN_FAILURE: {
       const newState = { ...state };
+      newState.user = {};
+      newState.isLoading = false;
+      return newState;
+    }
+    case types.ADMIN_LOGIN_FAILURE: {
+      const newState = { ...state };
+      newState.admin = {};
       newState.isLoading = false;
       return newState;
     }
@@ -23,10 +31,21 @@ export default (state = initialState, action) => {
       const newState = { ...state };
       newState.isLoggedIn = true;
       newState.isLoading = false;
+      newState.admin = {};
       newState.user = action.payload.user;
       newState.token = action.payload.token;
       return newState;
     }
+    case types.ADMIN_LOGIN_SUCCESS: {
+      const newState = { ...state };
+      newState.isLoggedIn = true;
+      newState.isLoading = false;
+      newState.user = {};
+      newState.admin = action.payload.admin;
+      newState.token = action.payload.token;
+      return newState;
+    }
+
     default: {
       return state;
     }

@@ -23,10 +23,6 @@ import {
 import * as actions from '../../store/modules/theme/actions';
 
 export default function HomeHeader() {
-  const styles = {
-    width: '699px',
-  };
-
   const dispatch = useDispatch();
   const currentTheme = useSelector(state => state.theme.theme);
   let currentUser = useSelector(state => state.auth.user.nome);
@@ -104,7 +100,7 @@ export default function HomeHeader() {
           <Nav>
             <Nav.Item>
               <InputGroup size="lg" inside>
-                <Input style={styles} />
+                <Input className="search-bar" />
                 <InputGroup.Button>
                   <SearchIcon style={{ fontSize: 20 }} />
                 </InputGroup.Button>

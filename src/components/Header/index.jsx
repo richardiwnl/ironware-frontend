@@ -1,16 +1,16 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
-import { FaMoon, FaSun } from 'react-icons/fa';
+import { Fa, FaSun, FaSignOutAlt } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Header, IconButton, Nav, Navbar } from 'rsuite';
 
-import * as actions from '../../store/modules/theme/actions';
+import * as actions from '../../store/modules/auth/actions';
 
 export default function IHeader() {
   const dispatch = useDispatch();
-  const currentTheme = useSelector(state => state.theme.theme);
 
   const changeTheme = () => {
-    dispatch(actions.switchTheme());
+    dispatch(actions.adminLoginFailure());
   };
 
   return (
@@ -25,13 +25,7 @@ export default function IHeader() {
               <IconButton
                 appearance="subtle"
                 size="sm"
-                icon={
-                  currentTheme === 'dark' ? (
-                    <FaMoon style={{ fontSize: 28 }} />
-                  ) : (
-                    <FaSun style={{ fontSize: 28 }} />
-                  )
-                }
+                icon={<FaSignOutAlt style={{ fontSize: 28 }} />}
               />
             </Nav.Item>
           </Nav>

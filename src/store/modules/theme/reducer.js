@@ -1,7 +1,7 @@
 import * as types from '../types';
 
 const initialState = {
-  theme: 'dark',
+  theme: 'light',
 };
 
 export default (state = initialState, action) => {
