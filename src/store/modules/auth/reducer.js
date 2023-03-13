@@ -1,7 +1,8 @@
 import * as types from '../types';
 
 const initialState = {
-  isLoggedIn: false,
+  isUserLoggedIn: false,
+  isAdminLoggedIn: false,
   isLoading: false,
   token: '',
   user: {},
@@ -29,20 +30,27 @@ export default (state = initialState, action) => {
     }
     case types.LOGIN_SUCCESS: {
       const newState = { ...state };
-      newState.isLoggedIn = true;
+      newState.isUserLoggedIn = true;
       newState.isLoading = false;
-      newState.admin = {};
+      // newState.admin = {};
       newState.user = action.payload.user;
       newState.token = action.payload.token;
       return newState;
     }
     case types.ADMIN_LOGIN_SUCCESS: {
       const newState = { ...state };
-      newState.isLoggedIn = true;
+      newState.isAdminLoggedIn = true;
       newState.isLoading = false;
-      newState.user = {};
+      // newState.user = {};
       newState.admin = action.payload.admin;
       newState.token = action.payload.token;
+      return newState;
+    }
+
+    case types.USER_LOGOUT: {
+      const newState = { ...state };
+      newState.isUserLoggedIn = false;
+      newState.user = {};
       return newState;
     }
 

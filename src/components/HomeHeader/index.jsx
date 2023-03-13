@@ -1,13 +1,14 @@
 /* eslint-disable jsx-a11y/alt-text */
 import React, { useState } from 'react';
 
+import { FaSignOutAlt } from 'react-icons/fa';
+
 import AvatarIcon from '@rsuite/icons/legacy/Avatar';
 import CartIcon from '@rsuite/icons/legacy/CartPlus';
 import HeartIcon from '@rsuite/icons/legacy/Heart';
 import MenuIcon from '@rsuite/icons/Menu';
 import SearchIcon from '@rsuite/icons/Search';
 
-import { FaMoon, FaSun } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
@@ -20,19 +21,19 @@ import {
   Navbar,
 } from 'rsuite';
 
-import * as actions from '../../store/modules/theme/actions';
+import * as actions from '../../store/modules/auth/actions';
 
 export default function HomeHeader() {
   const dispatch = useDispatch();
-  const currentTheme = useSelector(state => state.theme.theme);
+  const isLoggedIn = useSelector(state => state.auth.isUserLoggedIn);
   let currentUser = useSelector(state => state.auth.user.nome);
 
   const [open, setOpen] = useState(false);
 
   if (currentUser) currentUser = currentUser.split(' ').at(0);
 
-  const changeTheme = () => {
-    dispatch(actions.switchTheme());
+  const logout = () => {
+    dispatch(actions.userLogout());
   };
 
   return (
@@ -58,21 +59,17 @@ export default function HomeHeader() {
           <Nav>
             <Navbar.Brand href="/">IRONWARE</Navbar.Brand>
           </Nav>
-          <Nav pullRight>
-            <Nav.Item onClick={changeTheme} as="div">
-              <IconButton
-                appearance="subtle"
-                size="sm"
-                icon={
-                  currentTheme === 'dark' ? (
-                    <FaMoon style={{ fontSize: 28 }} />
-                  ) : (
-                    <FaSun style={{ fontSize: 28 }} />
-                  )
-                }
-              />
-            </Nav.Item>
-          </Nav>
+          {isLoggedIn ? (
+            <Nav pullRight>
+              <Nav.Item onClick={logout} as="div">
+                <IconButton
+                  appearance="subtle"
+                  size="sm"
+                  icon={<FaSignOutAlt style={{ fontSize: 28 }} />}
+                />
+              </Nav.Item>
+            </Nav>
+          ) : null}
           <Nav pullRight>
             {currentUser ? (
               <Nav.Item

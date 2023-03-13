@@ -1,5 +1,11 @@
 import * as types from '../types';
 
+export function userLogout() {
+  return {
+    type: types.USER_LOGOUT,
+  };
+}
+
 export function adminLoginSuccess(payload) {
   return {
     type: types.ADMIN_LOGIN_SUCCESS,

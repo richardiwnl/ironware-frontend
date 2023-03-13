@@ -5,7 +5,7 @@ import IHeader from '../../components/Header';
 export default function AdminDashboard() {
   return (
     <>
-      <IHeader />
+      <IHeader dashboard />
       <h1>Dashboard Administrativa</h1>
     </>
   );
