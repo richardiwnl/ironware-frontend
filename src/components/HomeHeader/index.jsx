@@ -19,6 +19,7 @@ import {
   InputGroup,
   Nav,
   Navbar,
+  Button,
 } from 'rsuite';
 
 import * as actions from '../../store/modules/auth/actions';
@@ -46,10 +47,16 @@ export default function HomeHeader() {
       >
         <Drawer.Header>
           <Drawer.Title>
-            {currentUser ? `Olá, ${currentUser}` : `Olá. Faça seu login.`}
+            <p style={{ fontSize: 20, marginLeft: '20px' }}>
+              {currentUser ? `Olá, ${currentUser}` : `Olá. Faça seu login.`}
+            </p>
           </Drawer.Title>
         </Drawer.Header>
-        <Drawer.Body>.</Drawer.Body>
+        <Drawer.Body>
+          <Button appearance="default" block>
+            Block
+          </Button>
+        </Drawer.Body>
       </Drawer>
       <Header>
         <Navbar>
@@ -61,7 +68,7 @@ export default function HomeHeader() {
           </Nav>
           {isLoggedIn ? (
             <Nav pullRight>
-              <Nav.Item onClick={logout} as="div">
+              <Nav.Item onClick={logout} title="Sair" as="div">
                 <IconButton
                   appearance="subtle"
                   size="sm"

@@ -9,6 +9,7 @@ import AdminDashboard from '../pages/AdminDashboard';
 import Login from '../pages/Login';
 import Page404 from '../pages/Page404';
 import Home from '../pages/Home';
+import ProductRegister from '../pages/ProductRegister';
 
 export default function Routes() {
   return (
@@ -25,6 +26,12 @@ export default function Routes() {
       <MyRoute
         path="/administrativo/dashboard"
         component={AdminDashboard}
+        exact
+        isAdminClosed
+      />
+      <MyRoute
+        path="/administrativo/produto/cadastro"
+        component={ProductRegister}
         exact
         isAdminClosed
       />

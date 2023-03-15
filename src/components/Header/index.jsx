@@ -25,7 +25,7 @@ export default function IHeader({ dashboard }) {
           </Nav>
           {isLoggedIn && dashboard ? (
             <Nav pullRight>
-              <Nav.Item onClick={logout} as="div">
+              <Nav.Item title="Sair" onClick={logout} as="div">
                 <IconButton
                   appearance="subtle"
                   size="sm"
