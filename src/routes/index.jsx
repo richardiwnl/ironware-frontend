@@ -10,6 +10,7 @@ import Login from '../pages/Login';
 import Page404 from '../pages/Page404';
 import Home from '../pages/Home';
 import ProductRegister from '../pages/ProductRegister';
+import ProductList from '../pages/ProductList';
 
 export default function Routes() {
   return (
@@ -30,8 +31,14 @@ export default function Routes() {
         isAdminClosed
       />
       <MyRoute
-        path="/administrativo/produto/cadastro"
+        path="/administrativo/produto/cadastro/"
         component={ProductRegister}
+        exact
+        isAdminClosed
+      />
+      <MyRoute
+        path="/administrativo/produto/listagem"
+        component={ProductList}
         exact
         isAdminClosed
       />

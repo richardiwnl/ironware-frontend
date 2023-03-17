@@ -11,6 +11,7 @@ import SearchIcon from '@rsuite/icons/Search';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Button,
   Container,
   Drawer,
   Header,
@@ -19,7 +20,6 @@ import {
   InputGroup,
   Nav,
   Navbar,
-  Button,
 } from 'rsuite';
 
 import * as actions from '../../store/modules/auth/actions';
@@ -80,6 +80,7 @@ export default function HomeHeader() {
           <Nav pullRight>
             {currentUser ? (
               <Nav.Item
+                href="minha-conta/"
                 icon={<AvatarIcon style={{ fontSize: '25px' }} />}
               >{`Olá, ${currentUser}`}</Nav.Item>
             ) : (
