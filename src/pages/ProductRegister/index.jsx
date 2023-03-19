@@ -9,6 +9,7 @@ import {
   Form,
   InputGroup,
   InputNumber,
+  InputPicker,
   Message,
   Panel,
   Uploader,
@@ -31,17 +32,29 @@ export default function ProductRegister() {
     textAlign: 'center',
   };
 
+  // eslint-disable-next-line prefer-const
+  let [data, setData] = useState([]);
+  const [disabled, setDisabled] = useState(true);
+
   useEffect(() => {
     document.title = 'Ironware | Cadastro de Produto';
+
+    const getData = async () => {
+      const response = await axios.get('categoria/');
+      data = get(response, 'data.categorias', []);
+      setData(data.map(obj => ({ label: obj.nome, value: obj.id })));
+      if (data.length >= 1) setDisabled(false);
+    };
+
+    getData();
   }, []);
 
   const toaster = useToaster();
-
   const [photos, setPhotos] = useState([]);
   const [nome, setNome] = useState('');
-  const [marca, setMarca] = useState('');
   const [quantidade, setQuantidade] = useState();
   const [valor, setValor] = useState();
+  const [categoria, setCategoria] = useState();
 
   const handleFormSubmit = async e => {
     if (!e) {
@@ -53,9 +66,18 @@ export default function ProductRegister() {
       return;
     }
 
+    if (!categoria) {
+      toaster.push(
+        <Message showIcon type="error">
+          Categoria é obrigatória
+        </Message>
+      );
+      return;
+    }
+
     const requestData = {
       nome,
-      marca,
+      id_categoria: categoria,
       quantidade,
       valor,
     };
@@ -84,7 +106,7 @@ export default function ProductRegister() {
       );
 
       setNome('');
-      setMarca('');
+      setCategoria('');
       setQuantidade(1);
       setValor();
       setPhotos([]);
@@ -135,15 +157,19 @@ export default function ProductRegister() {
 
                     <div className="secondChild">
                       <Form.Group>
-                        <Form.ControlLabel>Marca do Produto</Form.ControlLabel>
-                        <InputGroup>
-                          <Form.Control
-                            size="lg"
-                            name="marca"
-                            value={marca}
-                            onChange={setMarca}
-                          />
-                        </InputGroup>
+                        <Form.ControlLabel>
+                          Categoria do Produto
+                        </Form.ControlLabel>
+                        <InputPicker
+                          size="lg"
+                          data={data}
+                          value={categoria}
+                          onChange={setCategoria}
+                          disabled={disabled}
+                          menuMaxHeight={300}
+                          placeholder="Selecione"
+                          block
+                        />
                       </Form.Group>
                     </div>
                   </div>

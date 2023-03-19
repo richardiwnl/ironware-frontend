@@ -4,9 +4,6 @@ const ProductRegister = SchemaModel({
   nome: StringType()
     .minLength(3, 'O nome do produto deve ter ao menos 3 caracteres')
     .isRequired('O nome do produto é obrigatório'),
-  marca: StringType()
-    .minLength(2, 'A marca deve ter ao menos 3 caracteres')
-    .isRequired('A marca é obrigatório'),
   quantidade: NumberType()
     .min(1, 'A quantidade mínima é 1')
     .isRequired('A quantidade é obrigatória'),
