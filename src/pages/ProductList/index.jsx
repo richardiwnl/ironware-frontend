@@ -49,6 +49,18 @@ export default function ProductList() {
             width={1000}
             style={{ marginTop: '10px', padding: 'none' }}
             bordered
+            renderEmpty={() => (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '50vh',
+                }}
+              >
+                Nenhum produto cadastrado
+              </div>
+            )}
             data={data}
             onRowClick={rowData => {
               console.log(rowData);

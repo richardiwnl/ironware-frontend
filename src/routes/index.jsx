@@ -11,6 +11,7 @@ import Page404 from '../pages/Page404';
 import Home from '../pages/Home';
 import ProductRegister from '../pages/ProductRegister';
 import ProductList from '../pages/ProductList';
+import CategoryRegister from '../pages/CategoryRegister';
 
 export default function Routes() {
   return (
@@ -39,6 +40,12 @@ export default function Routes() {
       <MyRoute
         path="/administrativo/produto/listagem"
         component={ProductList}
+        exact
+        isAdminClosed
+      />
+      <MyRoute
+        path="/administrativo/categoria/cadastro"
+        component={CategoryRegister}
         exact
         isAdminClosed
       />
