@@ -77,8 +77,8 @@ export default function ProductList() {
             </Column>
 
             <Column width={200}>
-              <HeaderCell>Marca</HeaderCell>
-              <Cell dataKey="marca" />
+              <HeaderCell>Categoria</HeaderCell>
+              <Cell dataKey="categoria" />
             </Column>
 
             <Column width={100}>

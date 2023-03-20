@@ -12,6 +12,8 @@ import Home from '../pages/Home';
 import ProductRegister from '../pages/ProductRegister';
 import ProductList from '../pages/ProductList';
 import CategoryRegister from '../pages/CategoryRegister';
+import AdminEnderecoRegister from '../pages/AdminEnderecoRegister/AdminEnderecoRegister';
+import EnderecoRegister from '../pages/EnderecoRegister/EnderecoRegister';
 
 export default function Routes() {
   return (
@@ -46,6 +48,18 @@ export default function Routes() {
       <MyRoute
         path="/administrativo/categoria/cadastro"
         component={CategoryRegister}
+        exact
+        isAdminClosed
+      />
+      <MyRoute
+        path="/administrativo/minha-conta/endereco/cadastro"
+        component={AdminEnderecoRegister}
+        exact
+        isAdminClosed
+      />
+      <MyRoute
+        path="/minha-conta/endereco/cadastro"
+        component={EnderecoRegister}
         exact
         isAdminClosed
       />
