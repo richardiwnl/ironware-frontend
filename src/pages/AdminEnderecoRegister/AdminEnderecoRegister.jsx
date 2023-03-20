@@ -45,6 +45,7 @@ export default function AdminEnderecoRegister() {
   const [numero, setNumero] = useState('');
 
   useEffect(() => {
+    document.title = 'Ironware | Cadastro de Usuário ';
     const fetch = async () => {
       if (cep.match(/^([\d]{2})\.?([\d]{3})-?([\d]{3})/)) {
         setIsLoading(true);

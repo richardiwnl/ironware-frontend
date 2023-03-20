@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Pagination, Table, Modal } from 'rsuite';
 import { get } from 'lodash';
@@ -26,6 +26,10 @@ export default function ProductList() {
     setPage(1);
     setLimit(dataKey);
   };
+
+  useEffect(() => {
+    document.title = 'Ironware | Listagem de Produtos';
+  }, []);
 
   const data = defaultData.filter((v, i) => {
     const start = limit * (page - 1);

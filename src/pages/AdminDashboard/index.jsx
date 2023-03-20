@@ -4,6 +4,8 @@ import IHeader from '../../components/Header';
 import Centered from '../Page404/styled';
 
 export default function AdminDashboard() {
+  document.title = 'Ironware | Dashboard Administrativa';
+
   return (
     <>
       <IHeader dashboard />

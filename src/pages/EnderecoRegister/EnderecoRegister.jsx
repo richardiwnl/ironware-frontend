@@ -45,6 +45,8 @@ export default function EnderecoRegister() {
   const [numero, setNumero] = useState('');
 
   useEffect(() => {
+    document.title = 'Ironware | Cadastro de Endereço';
+
     const fetch = async () => {
       if (cep.match(/^([\d]{2})\.?([\d]{3})-?([\d]{3})/)) {
         setIsLoading(true);
