@@ -1,6 +1,8 @@
-import React from 'react';
-import { Button, Pagination, Table } from 'rsuite';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Button, Pagination, Table, Modal } from 'rsuite';
 import { get } from 'lodash';
+import RemindIcon from '@rsuite/icons/legacy/Remind';
 
 import IHeader from '../../components/Header';
 import axios from '../../services/axios';
@@ -18,21 +20,57 @@ getData();
 export default function ProductList() {
   const [limit, setLimit] = React.useState(8);
   const [page, setPage] = React.useState(1);
+  const history = useHistory();
 
   const handleChangeLimit = dataKey => {
     setPage(1);
     setLimit(dataKey);
   };
 
-  console.log(defaultData);
-
   const data = defaultData.filter((v, i) => {
     const start = limit * (page - 1);
     const end = start + limit;
     return i >= start && i < end;
   });
+
+  const [delId, setDelId] = useState(0);
+  const [open, setOpen] = useState(false);
+  const handleOpen = id => {
+    setDelId(id);
+    setOpen(true);
+  };
+
+  const handleDelete = async () => {
+    setOpen(false);
+    await axios.delete(`produtos/${delId}`);
+    window.location.reload();
+  };
+
+  const handleClose = () => setOpen(false);
+
   return (
     <>
+      <Modal
+        style={{ marginTop: '10vh' }}
+        backdrop="static"
+        role="alertdialog"
+        open={open}
+        onClose={handleClose}
+        size="xs"
+      >
+        <Modal.Body>
+          <RemindIcon style={{ color: '#ff0000', fontSize: 28, margin: 15 }} />
+          Deseja apagar o produto selecionado?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={handleDelete} appearance="primary">
+            Apagar
+          </Button>
+          <Button onClick={handleClose} appearance="subtle">
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <IHeader dashboard />
       <Centered>
         <div>
@@ -78,7 +116,7 @@ export default function ProductList() {
 
             <Column width={200}>
               <HeaderCell>Categoria</HeaderCell>
-              <Cell dataKey="categoria" />
+              <Cell dataKey="Categorium.nome" />
             </Column>
 
             <Column width={100}>
@@ -98,8 +136,7 @@ export default function ProductList() {
                 {rowData => (
                   <Button
                     appearance="link"
-                    // eslint-disable-next-line no-alert
-                    onClick={() => alert(`id:${rowData.id}`)}
+                    onClick={() => history.push(`editar/${rowData.id}`)}
                   >
                     Editar
                   </Button>
@@ -115,7 +152,7 @@ export default function ProductList() {
                   <Button
                     appearance="link"
                     // eslint-disable-next-line no-alert
-                    onClick={() => alert(`id:${rowData.id}`)}
+                    onClick={() => handleOpen(rowData.id)}
                   >
                     Apagar
                   </Button>

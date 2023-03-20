@@ -1,5 +1,6 @@
 import { get } from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import {
   Button,
   ButtonToolbar,
@@ -16,11 +17,68 @@ import {
   useToaster,
 } from 'rsuite';
 
+import CustomLoader from '../../components/CustomLoader';
 import IHeader from '../../components/Header';
 import axios from '../../services/axios';
-import productRegister from './productRegister';
 
-export default function ProductRegister() {
+export default function ProductEdit() {
+  const history = useHistory();
+  const { id } = useParams();
+
+  const checkProduct = async () => {
+    try {
+      await axios.get(`produtos/${id}`);
+    } catch (err) {
+      history.goBack();
+    }
+  };
+
+  checkProduct();
+
+  const toaster = useToaster();
+  const [photos, setPhotos] = useState([]);
+  const [nome, setNome] = useState('');
+  const [quantidade, setQuantidade] = useState();
+  const [valor, setValor] = useState();
+  const [categoria, setCategoria] = useState('');
+
+  // eslint-disable-next-line prefer-const
+  let [data, setData] = useState([]);
+  const [disabled, setDisabled] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useState(() => {
+    document.title = 'Ironware | Edição de Produto';
+
+    const getData = async () => {
+      const response = await axios.get('categoria/');
+      data = get(response, 'data.categorias', []);
+      setData(data.map(obj => ({ label: obj.nome, value: obj.id })));
+      if (data.length >= 1) setDisabled(false);
+    };
+
+    const fillForm = async () => {
+      const response = await axios.get(`produtos/${id}`);
+      const produto = get(response, 'data.produto', {});
+      setNome(produto.nome);
+      setValor(produto.valor);
+      setQuantidade(produto.quantidade);
+    };
+
+    setIsLoading(false);
+    getData();
+    fillForm();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        <IHeader dashboard />
+        <CustomLoader isLoading={isLoading} />
+      </>
+    );
+  }
+
   const style = {
     marginTop: '50px',
     marginBottom: '50px',
@@ -31,30 +89,6 @@ export default function ProductRegister() {
     marginTop: '20px',
     textAlign: 'center',
   };
-
-  // eslint-disable-next-line prefer-const
-  let [data, setData] = useState([]);
-  const [disabled, setDisabled] = useState(true);
-
-  useEffect(() => {
-    document.title = 'Ironware | Cadastro de Produto';
-
-    const getData = async () => {
-      const response = await axios.get('categoria/');
-      data = get(response, 'data.categorias', []);
-      setData(data.map(obj => ({ label: obj.nome, value: obj.id })));
-      if (data.length >= 1) setDisabled(false);
-    };
-
-    getData();
-  }, []);
-
-  const toaster = useToaster();
-  const [photos, setPhotos] = useState([]);
-  const [nome, setNome] = useState('');
-  const [quantidade, setQuantidade] = useState();
-  const [valor, setValor] = useState();
-  const [categoria, setCategoria] = useState();
 
   const handleFormSubmit = async e => {
     if (!e) {
@@ -75,6 +109,33 @@ export default function ProductRegister() {
       return;
     }
 
+    if (!valor) {
+      toaster.push(
+        <Message showIcon type="error">
+          Valor é obrigatório
+        </Message>
+      );
+      return;
+    }
+
+    if (!nome) {
+      toaster.push(
+        <Message showIcon type="error">
+          Nome é obrigatório
+        </Message>
+      );
+      return;
+    }
+
+    if (!quantidade) {
+      toaster.push(
+        <Message showIcon type="error">
+          Quantidade é obrigatória
+        </Message>
+      );
+      return;
+    }
+
     const requestData = {
       nome,
       id_categoria: categoria,
@@ -84,12 +145,13 @@ export default function ProductRegister() {
 
     try {
       document.body.style.cursor = 'wait';
+      const response = await axios.put(`produtos/${id}`, requestData);
+      const productId = get(response, 'data.produto.id', null);
 
-      const response = await axios.post('produtos/', requestData);
-      const id = get(response, 'data.produto.id', null);
+      await axios.delete(`fotos/${id}`);
 
       const form = new FormData();
-      form.append('id_produto', id);
+      form.append('id_produto', productId);
 
       for (let i = 0; i < photos.length; i += 1) {
         form.append('fotos', photos[i].blobFile);
@@ -101,15 +163,9 @@ export default function ProductRegister() {
 
       toaster.push(
         <Message showIcon type="success" duration={3000}>
-          Produto cadastrado com sucesso!
+          Produto atualizado com sucesso!
         </Message>
       );
-
-      setNome('');
-      setCategoria('');
-      setQuantidade(1);
-      setValor();
-      setPhotos([]);
     } catch (err) {
       console.log('err', err);
       const errors = get(err, 'response.data.errors', []);
@@ -133,11 +189,10 @@ export default function ProductRegister() {
         <Content>
           <FlexboxGrid justify="center">
             <FlexboxGrid.Item>
-              <Panel header={<h3>Cadastro de Produto</h3>} bordered>
+              <Panel header={<h3>Edição de Produto</h3>} bordered>
                 <Form
                   autoComplete="off"
                   autoCorrect="off"
-                  model={productRegister}
                   onSubmit={handleFormSubmit}
                 >
                   <div className="parent">
@@ -255,7 +310,7 @@ export default function ProductRegister() {
                   <Form.Group style={helperStyle}>
                     <ButtonToolbar>
                       <Button appearance="primary" block type="submit">
-                        Enviar
+                        Editar
                       </Button>
                     </ButtonToolbar>
                   </Form.Group>
