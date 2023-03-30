@@ -66,6 +66,75 @@ const getData = async () => {
 
 getData();
 
+function Cards() {
+  const [categoria, setCategoria] = useState('all');
+  const updateCategoria = categoria => {
+    setCategoria(categoria);
+  };
+
+  let status = false;
+
+  if (categoria === 'all') {
+    status = true;
+  }
+
+  function allCategoria() {
+    updateCategoria('all');
+  }
+
+  if (!localStorage.hasOwnProperty('Cart')) {
+    localStorage.setItem('Cart', `${[]}`);
+  }
+
+  return (
+    <CardBox>
+      <CardContainer>
+        <CategoriaNavContainer>
+          <CategoriaItem>
+            <Nav appearance="subtle" onClick={allCategoria}>
+              <Nav.Item active={status}>Todos os Produtos</Nav.Item>
+            </Nav>
+          </CategoriaItem>
+          {CategoriaArray.map(value => (
+            <CategoriaNavItem
+              updateCategoria={updateCategoria}
+              NmCategoria={value['NmCategoria']}
+              categoria={categoria}
+            />
+          ))}
+        </CategoriaNavContainer>
+        <CardRow>
+          {status &&
+            Produtos.map(value => (
+              <Card
+                nm_nome={value['nm_nome']}
+                productImage={value['productImage']}
+                vl_valor={value['vl_valor']}
+                productCount={value['productCount']}
+                productLink={value['productLink']}
+                cd_produto={value['cd_produto']}
+                cd_categoria={value['cd_categoria']}
+                qt_quantidade={value['qt_quantidade']}
+              />
+            ))}
+          {Produtos.filter(obj => obj.cd_categoria === categoria).map(value => (
+            <Card
+              nm_nome={value['nm_nome']}
+              productImage={value['productImage']}
+              vl_valor={value['vl_valor']}
+              productCount={value['productCount']}
+              productLink={value['productLink']}
+              cd_produto={value['cd_produto']}
+              cd_categoria={value['cd_categoria']}
+              qt_quantidade={value['qt_quantidade']}
+            />
+          ))}
+        </CardRow>
+      </CardContainer>
+    </CardBox>
+  );
+}
+
 function Card({
   nm_nome,
   vl_valor,
@@ -96,7 +165,7 @@ function Card({
     let Found = false;
     const getItem = localStorage.getItem('Cart');
 
-    if (getItem == null) {
+    if (getItem === null) {
       updateProductCart(productObject);
     } else if (getItem.length === 0) {
       updateProductCart(productObject);
@@ -105,8 +174,8 @@ function Card({
 
       productCart.forEach(looping);
       function looping(value, index) {
-        if (value['cd_produto'] === cd_produto) {
-          productCart[index]['productCount'] += 1;
+        if (value.cd_produto === cd_produto) {
+          productCart[index].productCount += 1;
           localStorage.setItem('Cart', `${JSON.stringify(productCart)}`);
           Found = true;
         }
@@ -119,11 +188,11 @@ function Card({
 
   return (
     <CardModel>
-      <Link style={{ textDecoration: 'none' }} className="Link" to="/">
+      <Link className="Link" to="/">
         <CardInfo>
           <CardImage src={productImage} alt="" />
           <CardText>{nm_nome}</CardText>
-          <CardPrice style={{ color: '#55555578' }}>R$ {vl_valor}</CardPrice>
+          <CardPrice>R${vl_valor}</CardPrice>
         </CardInfo>
       </Link>
 
@@ -158,45 +227,6 @@ function Card({
   );
 }
 
-function CardsList({ categoria }) {
-  return (
-    <>
-      {Produtos.map(value => {
-        if (value['cd_categoria'] === categoria) {
-          return (
-            <Card
-              key={value.cd_produto}
-              nm_nome={value['nm_nome']}
-              productImage={value['productImage']}
-              vl_valor={value['vl_valor']}
-              productCount={value['productCount']}
-              productLink={value['productLink']}
-              cd_produto={value['cd_produto']}
-              cd_categoria={value['cd_categoria']}
-              qt_quantidade={value['qt_quantidade']}
-            />
-          );
-          // eslint-disable-next-line no-else-return
-        } else if (categoria === 'all') {
-          return (
-            <Card
-              key={value.cd_produto}
-              nm_nome={value['nm_nome']}
-              productImage={value['productImage']}
-              vl_valor={value['vl_valor']}
-              productCount={value['productCount']}
-              productLink={value['productLink']}
-              cd_produto={value['cd_produto']}
-              cd_categoria={value['cd_categoria']}
-              qt_quantidade={value['qt_quantidade']}
-            />
-          );
-        }
-      })}
-    </>
-  );
-}
-
 function CategoriaNavItem({ updateCategoria, NmCategoria, categoria }) {
   let status = false;
 
@@ -214,65 +244,6 @@ function CategoriaNavItem({ updateCategoria, NmCategoria, categoria }) {
         <Nav.Item active={status}>{NmCategoria}</Nav.Item>
       </Nav>
     </CategoriaItem>
-  );
-}
-
-function CategoriaNavbar({ updateCategoria, categoria }) {
-  let status = false;
-
-  if (categoria === 'all') {
-    status = true;
-  }
-
-  function allCategoria() {
-    updateCategoria('all');
-  }
-
-  return (
-    <CategoriaNavContainer>
-      <CategoriaItem>
-        <Nav appearance="subtle" onClick={allCategoria}>
-          <Nav.Item active={status}>Todos os Produtos</Nav.Item>
-        </Nav>
-      </CategoriaItem>
-
-      {CategoriaArray.map((value, index) => (
-        <CategoriaNavItem
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
-          updateCategoria={updateCategoria}
-          NmCategoria={value['NmCategoria']}
-          categoria={categoria}
-        />
-      ))}
-    </CategoriaNavContainer>
-  );
-}
-
-function Cards() {
-  const [categoria, setCategoria] = useState('all');
-  const updateCategoria = categoria => {
-    setCategoria(categoria);
-  };
-
-  if (!localStorage.hasOwnProperty('Cart')) {
-    localStorage.setItem('Cart', `${[]}`);
-  }
-
-  return (
-    <CardBox>
-      <CardContainer>
-        <div>
-          <CategoriaNavbar
-            updateCategoria={updateCategoria}
-            categoria={categoria}
-          />
-        </div>
-        <CardRow>
-          <CardsList categoria={categoria} />
-        </CardRow>
-      </CardContainer>
-    </CardBox>
   );
 }
 
