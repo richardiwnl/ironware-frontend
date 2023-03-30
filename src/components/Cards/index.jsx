@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
@@ -95,8 +96,9 @@ function Cards() {
               <Nav.Item active={status}>Todos os Produtos</Nav.Item>
             </Nav>
           </CategoriaItem>
-          {CategoriaArray.map(value => (
+          {CategoriaArray.map((value, index) => (
             <CategoriaNavItem
+              key={index}
               updateCategoria={updateCategoria}
               NmCategoria={value['NmCategoria']}
               categoria={categoria}
@@ -105,8 +107,9 @@ function Cards() {
         </CategoriaNavContainer>
         <CardRow>
           {status &&
-            Produtos.map(value => (
+            Produtos.map((value, index) => (
               <Card
+                key={index}
                 nm_nome={value['nm_nome']}
                 productImage={value['productImage']}
                 vl_valor={value['vl_valor']}
@@ -117,18 +120,21 @@ function Cards() {
                 qt_quantidade={value['qt_quantidade']}
               />
             ))}
-          {Produtos.filter(obj => obj.cd_categoria === categoria).map(value => (
-            <Card
-              nm_nome={value['nm_nome']}
-              productImage={value['productImage']}
-              vl_valor={value['vl_valor']}
-              productCount={value['productCount']}
-              productLink={value['productLink']}
-              cd_produto={value['cd_produto']}
-              cd_categoria={value['cd_categoria']}
-              qt_quantidade={value['qt_quantidade']}
-            />
-          ))}
+          {Produtos.filter(obj => obj.cd_categoria === categoria).map(
+            (value, index) => (
+              <Card
+                key={index}
+                nm_nome={value['nm_nome']}
+                productImage={value['productImage']}
+                vl_valor={value['vl_valor']}
+                productCount={value['productCount']}
+                productLink={value['productLink']}
+                cd_produto={value['cd_produto']}
+                cd_categoria={value['cd_categoria']}
+                qt_quantidade={value['qt_quantidade']}
+              />
+            )
+          )}
         </CardRow>
       </CardContainer>
     </CardBox>
@@ -188,11 +194,11 @@ function Card({
 
   return (
     <CardModel>
-      <Link className="Link" to="/">
+      <Link className="Link" to="/" style={{ textDecoration: 'none' }}>
         <CardInfo>
           <CardImage src={productImage} alt="" />
           <CardText>{nm_nome}</CardText>
-          <CardPrice>R${vl_valor}</CardPrice>
+          <CardPrice style={{ color: '#7c7c7c' }}>R$ {vl_valor}</CardPrice>
         </CardInfo>
       </Link>
 
