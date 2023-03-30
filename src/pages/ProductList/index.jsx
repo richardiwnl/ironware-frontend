@@ -4,22 +4,23 @@ import { Button, Pagination, Table, Modal } from 'rsuite';
 import { get } from 'lodash';
 import RemindIcon from '@rsuite/icons/legacy/Remind';
 
+import TrashIcon from '@rsuite/icons/Trash';
+import EditIcon from '@rsuite/icons/Edit';
+
 import IHeader from '../../components/Header';
+import CustomLoader from '../../components/CustomLoader';
 import axios from '../../services/axios';
 import Centered from './styled';
 
 const { Column, HeaderCell, Cell } = Table;
 let defaultData = [];
 
-const getData = async () => {
-  const response = await axios.get('produtos/');
-  defaultData = get(response, 'data.produtos', []);
-};
-
-getData();
 export default function ProductList() {
-  const [limit, setLimit] = React.useState(8);
-  const [page, setPage] = React.useState(1);
+  const [isLoading, setIsLoading] = useState(true);
+  const [delId, setDelId] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [limit, setLimit] = useState(8);
+  const [page, setPage] = useState(1);
   const history = useHistory();
 
   const handleChangeLimit = dataKey => {
@@ -27,18 +28,6 @@ export default function ProductList() {
     setLimit(dataKey);
   };
 
-  useEffect(() => {
-    document.title = 'Ironware | Listagem de Produtos';
-  }, []);
-
-  const data = defaultData.filter((v, i) => {
-    const start = limit * (page - 1);
-    const end = start + limit;
-    return i >= start && i < end;
-  });
-
-  const [delId, setDelId] = useState(0);
-  const [open, setOpen] = useState(false);
   const handleOpen = id => {
     setDelId(id);
     setOpen(true);
@@ -51,6 +40,32 @@ export default function ProductList() {
   };
 
   const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    document.title = 'Ironware | Listagem de Produtos';
+    const getData = async () => {
+      const response = await axios.get('produtos/');
+      defaultData = get(response, 'data.produtos', []);
+      setIsLoading(false);
+    };
+
+    getData();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <>
+        <IHeader dashboard />
+        <CustomLoader isLoading />
+      </>
+    );
+  }
+
+  const data = defaultData.filter((v, i) => {
+    const start = limit * (page - 1);
+    const end = start + limit;
+    return i >= start && i < end;
+  });
 
   return (
     <>
@@ -88,7 +103,7 @@ export default function ProductList() {
           </h3>
           <Table
             height={410}
-            width={1000}
+            width={950}
             style={{ marginTop: '10px', padding: 'none' }}
             bordered
             renderEmpty={() => (
@@ -134,7 +149,7 @@ export default function ProductList() {
             </Column>
 
             <Column width={80} fixed="right">
-              <HeaderCell>...</HeaderCell>
+              <HeaderCell> </HeaderCell>
 
               <Cell style={{ padding: '6px' }}>
                 {rowData => (
@@ -142,14 +157,14 @@ export default function ProductList() {
                     appearance="link"
                     onClick={() => history.push(`editar/${rowData.id}`)}
                   >
-                    Editar
+                    <EditIcon style={{ fontSize: 22 }} />
                   </Button>
                 )}
               </Cell>
             </Column>
 
             <Column width={80} fixed="right">
-              <HeaderCell>...</HeaderCell>
+              <HeaderCell> </HeaderCell>
 
               <Cell style={{ padding: '6px' }}>
                 {rowData => (
@@ -158,7 +173,7 @@ export default function ProductList() {
                     // eslint-disable-next-line no-alert
                     onClick={() => handleOpen(rowData.id)}
                   >
-                    Apagar
+                    <TrashIcon style={{ fontSize: 22, color: 'red' }} />
                   </Button>
                 )}
               </Cell>

@@ -62,7 +62,7 @@ export default function Routes() {
         path="/minha-conta/endereco/cadastro"
         component={EnderecoRegister}
         exact
-        isAdminClosed
+        isClosed
       />
       <MyRoute
         path="/administrativo/produto/editar/:id"

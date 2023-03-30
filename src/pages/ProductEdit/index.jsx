@@ -148,7 +148,9 @@ export default function ProductEdit() {
       const response = await axios.put(`produtos/${id}`, requestData);
       const productId = get(response, 'data.produto.id', null);
 
-      await axios.delete(`fotos/${id}`);
+      if (photos.length > 0) {
+        await axios.delete(`fotos/${id}`);
+      }
 
       const form = new FormData();
       form.append('id_produto', productId);

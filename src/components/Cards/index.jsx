@@ -1,152 +1,115 @@
-/* eslint-disable no-prototype-builtins */
+/* eslint-disable consistent-return */
+/* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
-import React from 'react';
-import { Button, Nav } from 'rsuite';
-import styled from 'styled-components';
+/* eslint-disable no-prototype-builtins */
+/* eslint-disable no-shadow */
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-undef */
+/* eslint-disable no-use-before-define */
+/* eslint-disable dot-notation */
+/* eslint-disable no-inner-declarations */
+/* eslint-disable camelcase */
+import React, { useState } from 'react';
+import { IconButton, Nav } from 'rsuite';
+import PlusRoundIcon from '@rsuite/icons/PlusRound';
+import { Link } from 'react-router-dom';
+import WarningRoundIcon from '@rsuite/icons/WarningRound';
+import { isEmpty } from 'lodash';
 
-const CardBox = styled.div`
-  padding: 5% 5%;
-  background: white;
-  bottom: 0;
-  width: 100%;
-  margin-top: 0;
+import {
+  CategoriaItem,
+  CategoriaNavContainer,
+  CardPrice,
+  CardText,
+  CardImage,
+  CardInfo,
+  CardModel,
+  CardRow,
+  CardContainer,
+  CardBox,
+} from './styled';
 
-  @media (max-width: 1000px) {
-    padding: 70px 30px;
-  }
-`;
+import axios from '../../services/axios';
 
-const CardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  margin: 0 ato;
-`;
+const Produtos = [];
 
-const CardNavContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-`;
+// array de categorias (retorne para ele)
+const CategoriaArray = [];
 
-const CardRow = styled.div`
-  display: inline-grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 0.5fr));
-  grid-gap: 1%;
-  align-items: center;
-  justify-content: center;
+const getData = async () => {
+  const response = await axios.get('produtos/');
+  const { produtos } = response.data;
 
-  @media (max-width: 1000px) {
-    grid-template-columns: repeat(auto-fill, minmax(220px, 0.5fr));
-  }
-`;
+  produtos.forEach(obj => {
+    if (
+      CategoriaArray.map(cat => cat.NmCategoria).indexOf(
+        obj.Categorium.nome
+      ) === -1
+    ) {
+      CategoriaArray.push({ NmCategoria: obj.Categorium.nome });
+    }
+  });
 
-const CardModel = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-top: 60px;
-  margin-left: 60px;
-  width: 100%;
+  produtos.forEach(obj =>
+    Produtos.push({
+      cd_produto: obj.id,
+      cd_categoria: obj.Categorium.nome,
+      nm_nome: obj.nome,
+      qt_quantidade: obj.quantidade,
+      vl_valor: obj.valor,
+      productImage: isEmpty(obj.Fotos)
+        ? 'http://localhost:3000/images/no-photo.jpg'
+        : obj.Fotos[0].url,
+    })
+  );
+};
 
-  padding: 0.5rem;
-  border: 0.1px solid #ebebeb;
-  border-radius: 3px;
-
-  transition: box-shadow 200ms ease 0s;
-  box-shadow: rgba(40, 41, 61, 0.08) 0px 0px 1px,
-    rgba(96, 97, 112, 0.16) 0px 0.5px 2px;
-
-  &:hover {
-    box-shadow: rgba(40, 41, 61, 0.08) 0px 4px 8px,
-      rgba(96, 97, 112, 0.16) 0px 8px 160px;
-  }
-`;
-
-const CardInfo = styled.a`
-  display: flex;
-  flex-direction: column;
-  padding: 0.5rem;
-  text-align: left;
-
-  &:hover {
-    text-decoration: none;
-  }
-`;
-const CardImage = styled.img`
-  width: auto;
-  max-width: 70%;
-  margin: auto;
-  border-radius: 10px;
-`;
-const CardText = styled.p`
-  font-size: 125%;
-  color: rgb(66 70 77);
-  margin-top: 20px;
-  margin-bottom: 10%;
-  font-weight: regular;
-  line-height: 1.125rem;
-
-  &:hover {
-    color: rgb(164 167 173);
-    transition: 200ms ease-in;
-  }
-`;
-const CardPrice = styled.p`
-  font-size: 200%;
-  color: rgb(255 101 0);
-  font-weight: 700;
-  margin-bottom: 10%;
-  font-weight: bold;
-
-  &:hover {
-    color: rgb(255 138 60);
-    transition: 200ms ease-in;
-  }
-`;
+getData();
 
 function Card({
-  productName,
-  productPrice,
+  nm_nome,
+  vl_valor,
   productImage,
   productLink,
-  productId,
+  cd_produto,
+  cd_categoria,
+  qt_quantidade,
 }) {
   const productObject = {
-    productId,
+    cd_produto,
+    cd_categoria,
+    nm_nome,
+    qt_quantidade,
+    vl_valor,
     productCount: 1,
-    productName,
-    productPrice,
     productImage,
     productLink,
   };
-
   let productCart = [];
+
   const updateProductCart = object => {
     productCart.push(object);
     localStorage.setItem('Cart', `${JSON.stringify(productCart)}`);
   };
-  let getItem = localStorage.getItem('Cart');
-  if (getItem.length !== 0) {
-    productCart = JSON.parse(getItem);
-  } else {
-    updateProductCart(productObject);
-    getItem = localStorage.getItem('Cart');
-    productCart = JSON.parse(getItem);
-  }
 
   const addToCart = () => {
     let Found = false;
+    const getItem = localStorage.getItem('Cart');
 
-    // eslint-disable-next-line no-use-before-define
-    productCart.forEach(looping);
+    if (getItem == null) {
+      updateProductCart(productObject);
+    } else if (getItem.length === 0) {
+      updateProductCart(productObject);
+    } else if (getItem.length !== 0) {
+      productCart = JSON.parse(getItem);
 
-    function looping(value, index) {
-      if (value.productId === productId) {
-        const getItem2 = JSON.parse(localStorage.getItem('Cart'));
-        getItem2[index][value] += 1;
-        localStorage.setItem('Cart', `${JSON.stringify(getItem2)}`);
-        console.log(getItem2[index][value]);
-        Found = true;
+      productCart.forEach(looping);
+      function looping(value, index) {
+        if (value['cd_produto'] === cd_produto) {
+          productCart[index]['productCount'] += 1;
+          localStorage.setItem('Cart', `${JSON.stringify(productCart)}`);
+          Found = true;
+        }
       }
       if (!Found) {
         updateProductCart(productObject);
@@ -156,98 +119,173 @@ function Card({
 
   return (
     <CardModel>
-      <CardInfo href={productLink}>
-        <CardImage src={productImage} alt="" />
-        <CardText>{productName}</CardText>
-        <CardPrice>R${productPrice}</CardPrice>
-      </CardInfo>
-      <Button onClick={addToCart} appearance="primary" block>
-        COMPRAR
-      </Button>
+      <Link style={{ textDecoration: 'none' }} className="Link" to="/">
+        <CardInfo>
+          <CardImage src={productImage} alt="" />
+          <CardText>{nm_nome}</CardText>
+          <CardPrice style={{ color: '#55555578' }}>R$ {vl_valor}</CardPrice>
+        </CardInfo>
+      </Link>
+
+      {qt_quantidade > 0 && (
+        <IconButton
+          onClick={addToCart}
+          size="lg"
+          icon={<PlusRoundIcon />}
+          placement="right"
+          appearance="primary"
+          color="blue"
+          block
+          style={{ marginTop: 'auto' }}
+        >
+          COMPRAR
+        </IconButton>
+      )}
+      {qt_quantidade <= 0 && (
+        <IconButton
+          size="lg"
+          icon={<WarningRoundIcon />}
+          placement="left"
+          appearance="primary"
+          color="red"
+          block
+          style={{ marginTop: 'auto' }}
+        >
+          INDISPONÍVEL
+        </IconButton>
+      )}
     </CardModel>
   );
 }
 
-function CardsList({
-  products,
-  productName,
-  productPrice,
-  productImage,
-  productLink,
-  productId,
-  productCart,
-}) {
+function CardsList({ categoria }) {
   return (
     <>
-      {products.map(() => (
-        <Card
-          productName={productName}
-          productImage={productImage}
-          productPrice={productPrice}
-          productLink={productLink}
-          productId={productId}
-          productCart={productCart}
-        />
-      ))}
+      {Produtos.map(value => {
+        if (value['cd_categoria'] === categoria) {
+          return (
+            <Card
+              key={value.cd_produto}
+              nm_nome={value['nm_nome']}
+              productImage={value['productImage']}
+              vl_valor={value['vl_valor']}
+              productCount={value['productCount']}
+              productLink={value['productLink']}
+              cd_produto={value['cd_produto']}
+              cd_categoria={value['cd_categoria']}
+              qt_quantidade={value['qt_quantidade']}
+            />
+          );
+          // eslint-disable-next-line no-else-return
+        } else if (categoria === 'all') {
+          return (
+            <Card
+              key={value.cd_produto}
+              nm_nome={value['nm_nome']}
+              productImage={value['productImage']}
+              vl_valor={value['vl_valor']}
+              productCount={value['productCount']}
+              productLink={value['productLink']}
+              cd_produto={value['cd_produto']}
+              cd_categoria={value['cd_categoria']}
+              qt_quantidade={value['qt_quantidade']}
+            />
+          );
+        }
+      })}
     </>
   );
 }
 
+function CategoriaNavItem({ updateCategoria, NmCategoria, categoria }) {
+  let status = false;
+
+  if (categoria === NmCategoria) {
+    status = true;
+  }
+
+  function changeCategoria() {
+    updateCategoria(NmCategoria);
+  }
+
+  return (
+    <CategoriaItem>
+      <Nav appearance="subtle" onClick={changeCategoria}>
+        <Nav.Item active={status}>{NmCategoria}</Nav.Item>
+      </Nav>
+    </CategoriaItem>
+  );
+}
+
+function CategoriaNavbar({ updateCategoria, categoria }) {
+  let status = false;
+
+  if (categoria === 'all') {
+    status = true;
+  }
+
+  function allCategoria() {
+    updateCategoria('all');
+  }
+
+  return (
+    <CategoriaNavContainer>
+      <CategoriaItem>
+        <Nav appearance="subtle" onClick={allCategoria}>
+          <Nav.Item active={status}>Todos os Produtos</Nav.Item>
+        </Nav>
+      </CategoriaItem>
+
+      {CategoriaArray.map((value, index) => (
+        <CategoriaNavItem
+          // eslint-disable-next-line react/no-array-index-key
+          key={index}
+          updateCategoria={updateCategoria}
+          NmCategoria={value['NmCategoria']}
+          categoria={categoria}
+        />
+      ))}
+    </CategoriaNavContainer>
+  );
+}
+
 function Cards() {
+  const [categoria, setCategoria] = useState('all');
+  const updateCategoria = categoria => {
+    setCategoria(categoria);
+  };
+
   if (!localStorage.hasOwnProperty('Cart')) {
     localStorage.setItem('Cart', `${[]}`);
+  }
+
+  let productCart = [];
+  const getItem = localStorage.getItem('Cart');
+  if (getItem != null && getItem.length !== 0) {
+    productCart = JSON.parse(getItem);
+    function looping(value, index) {
+      if (value === 'null') {
+        productCart.splice(index, 1);
+        localStorage.setItem('Cart', `${JSON.stringify(productCart)}`);
+      }
+    }
+    productCart.forEach(looping);
+    if (productCart.length === 0) {
+      localStorage.setItem('Cart', `${[]}`);
+    }
   }
 
   return (
     <CardBox>
       <CardContainer>
-        <CardNavContainer>
-          <Nav appearance="subtle">
-            <Nav.Item active>Processadores</Nav.Item>
-          </Nav>
-        </CardNavContainer>
-        <CardRow>
-          <CardsList
-            products={[1, 2]}
-            productName="Ryzen"
-            productImage="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productPrice={5}
-            productLink="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productId={1}
+        <div>
+          <CategoriaNavbar
+            updateCategoria={updateCategoria}
+            categoria={categoria}
           />
-        </CardRow>
-
-        <CardNavContainer>
-          <Nav appearance="subtle">
-            <Nav.Item active>Placas de Vídeo</Nav.Item>
-          </Nav>
-        </CardNavContainer>
-
+        </div>
         <CardRow>
-          <CardsList
-            products={[1, 2]}
-            productName="Ryzen"
-            productImage="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productPrice={5}
-            productLink="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productId={2}
-          />
-        </CardRow>
-        <CardNavContainer>
-          <Nav appearance="subtle">
-            <Nav.Item active>Memória RAM</Nav.Item>
-          </Nav>
-        </CardNavContainer>
-        <CardRow>
-          <CardsList
-            id="tt"
-            products={[1, 2]}
-            productName="Ryzen"
-            productImage="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productPrice={5}
-            productLink="https://images8.kabum.com.br/produtos/fotos/181088/processador-amd-ryzen-5-5600g-3-9ghz-4-4ghz-max-turbo-am4-video-integrado-6-nucleos-100-100000252box_1627588230_m.jpg"
-            productId={3}
-          />
+          <CardsList categoria={categoria} />
         </CardRow>
       </CardContainer>
     </CardBox>
