@@ -259,22 +259,6 @@ function Cards() {
     localStorage.setItem('Cart', `${[]}`);
   }
 
-  let productCart = [];
-  const getItem = localStorage.getItem('Cart');
-  if (getItem != null && getItem.length !== 0) {
-    productCart = JSON.parse(getItem);
-    function looping(value, index) {
-      if (value === 'null') {
-        productCart.splice(index, 1);
-        localStorage.setItem('Cart', `${JSON.stringify(productCart)}`);
-      }
-    }
-    productCart.forEach(looping);
-    if (productCart.length === 0) {
-      localStorage.setItem('Cart', `${[]}`);
-    }
-  }
-
   return (
     <CardBox>
       <CardContainer>

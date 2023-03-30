@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Pagination, Table, Modal } from 'rsuite';
+import { Button, ButtonToolbar, Pagination, Table, Modal } from 'rsuite';
 import { get } from 'lodash';
 import RemindIcon from '@rsuite/icons/legacy/Remind';
 
 import TrashIcon from '@rsuite/icons/Trash';
 import EditIcon from '@rsuite/icons/Edit';
+import FileDownloadIcon from '@rsuite/icons/FileDownload';
 
 import IHeader from '../../components/Header';
 import CustomLoader from '../../components/CustomLoader';
@@ -22,6 +23,29 @@ export default function ProductList() {
   const [limit, setLimit] = useState(8);
   const [page, setPage] = useState(1);
   const history = useHistory();
+
+  const downloadRelatorio = async () => {
+    document.body.style.cursor = 'wait';
+    await axios
+      .get('relatorio/', {
+        responseType: 'blob',
+      })
+      .then(response => {
+        const href = URL.createObjectURL(response.data);
+        const link = document.createElement('a');
+
+        link.href = href;
+        link.setAttribute('download', `relatorio_${Date.now()}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(href);
+      })
+      .finally(() => {
+        document.body.style.cursor = 'default';
+      });
+  };
 
   const handleChangeLimit = dataKey => {
     setPage(1);
@@ -197,6 +221,11 @@ export default function ProductList() {
               onChangeLimit={handleChangeLimit}
             />
           </div>
+          <ButtonToolbar>
+            <Button appearance="primary" onClick={downloadRelatorio}>
+              Baixar Relatório <FileDownloadIcon style={{ fontSize: 22 }} />
+            </Button>
+          </ButtonToolbar>
         </div>
       </Centered>
     </>
