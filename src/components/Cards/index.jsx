@@ -10,7 +10,7 @@
 /* eslint-disable dot-notation */
 /* eslint-disable no-inner-declarations */
 /* eslint-disable camelcase */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IconButton, Nav } from 'rsuite';
 import PlusRoundIcon from '@rsuite/icons/PlusRound';
 import { Link } from 'react-router-dom';
@@ -37,38 +37,47 @@ const Produtos = [];
 // array de categorias (retorne para ele)
 const CategoriaArray = [];
 
-const getData = async () => {
-  const response = await axios.get('produtos/');
-  const { produtos } = response.data;
-
-  produtos.forEach(obj => {
-    if (
-      CategoriaArray.map(cat => cat.NmCategoria).indexOf(
-        obj.Categorium.nome
-      ) === -1
-    ) {
-      CategoriaArray.push({ NmCategoria: obj.Categorium.nome });
-    }
-  });
-
-  produtos.forEach(obj =>
-    Produtos.push({
-      cd_produto: obj.id,
-      cd_categoria: obj.Categorium.nome,
-      nm_nome: obj.nome,
-      qt_quantidade: obj.quantidade,
-      vl_valor: obj.valor,
-      productImage: isEmpty(obj.Fotos)
-        ? 'http://localhost:3000/images/no-photo.jpg'
-        : obj.Fotos[0].url,
-    })
-  );
-};
-
-getData();
-
 function Cards() {
+  const [isLoading, setIsLoading] = useState(true);
   const [categoria, setCategoria] = useState('all');
+
+  useEffect(() => {
+    const getData = async () => {
+      const response = await axios.get('produtos/');
+      const { produtos } = response.data;
+
+      produtos.forEach(obj => {
+        if (
+          CategoriaArray.map(cat => cat.NmCategoria).indexOf(
+            obj.Categorium.nome
+          ) === -1
+        ) {
+          CategoriaArray.push({ NmCategoria: obj.Categorium.nome });
+        }
+      });
+
+      produtos.forEach(obj =>
+        Produtos.push({
+          cd_produto: obj.id,
+          cd_categoria: obj.Categorium.nome,
+          nm_nome: obj.nome,
+          qt_quantidade: obj.quantidade,
+          vl_valor: obj.valor,
+          productImage: isEmpty(obj.Fotos)
+            ? 'http://localhost:3000/images/no-photo.jpg'
+            : obj.Fotos[0].url,
+        })
+      );
+      setIsLoading(false);
+    };
+
+    getData();
+  }, []);
+
+  if (isLoading) {
+    return null;
+  }
+
   const updateCategoria = categoria => {
     setCategoria(categoria);
   };
