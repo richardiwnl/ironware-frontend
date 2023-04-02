@@ -5,7 +5,6 @@ import { FaSignOutAlt } from 'react-icons/fa';
 
 import AvatarIcon from '@rsuite/icons/legacy/Avatar';
 import CartIcon from '@rsuite/icons/legacy/CartPlus';
-import HeartIcon from '@rsuite/icons/legacy/Heart';
 import MenuIcon from '@rsuite/icons/Menu';
 import SearchIcon from '@rsuite/icons/Search';
 
@@ -93,12 +92,10 @@ export default function HomeHeader() {
             )}
           </Nav>
           <Nav pullRight>
-            <Nav.Item icon={<HeartIcon style={{ fontSize: 28 }} />}>
-              Favoritos
-            </Nav.Item>
-          </Nav>
-          <Nav pullRight>
-            <Nav.Item icon={<CartIcon style={{ fontSize: 28 }} />}>
+            <Nav.Item
+              icon={<CartIcon style={{ fontSize: 28 }} />}
+              href="/carrinho"
+            >
               Carrinho
             </Nav.Item>
           </Nav>

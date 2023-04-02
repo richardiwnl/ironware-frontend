@@ -15,6 +15,7 @@ import CategoryRegister from '../pages/CategoryRegister';
 import AdminEnderecoRegister from '../pages/AdminEnderecoRegister/AdminEnderecoRegister';
 import EnderecoRegister from '../pages/EnderecoRegister/EnderecoRegister';
 import ProductEdit from '../pages/ProductEdit';
+import Cart from '../pages/Cart';
 
 export default function Routes() {
   return (
@@ -70,6 +71,8 @@ export default function Routes() {
         exact
         isAdminClosed
       />
+      <MyRoute path="/carrinho" component={Cart} exact />
+
       <MyRoute path="*" component={Page404} />
     </Switch>
   );
